@@ -3,7 +3,7 @@ A small SDL based library for modifying surfaces and creating image effects.
 
 Simply include this in your project and make calls via the SDL_SurfaceEx namespace.
 
-Code Examples:
+Code Example ( main.cpp):
 
 ```cpp
 
