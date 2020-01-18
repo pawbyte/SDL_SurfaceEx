@@ -37,7 +37,7 @@ I appreciate your generousity and moving this project forward.
 
 Discord Chat
 ======
-Come and  [join our discord server](https://discord.gg/aNX3Fcx)!  Here, you can engage in chats about game pencil, get help and even voice chat the developers and users!
+Come and  [join our discord server](https://discord.gg/aNX3Fcx)!  Bounce ideas off each other, hangout and discord open source,gaming, etc.
 
 Forums
 ======
