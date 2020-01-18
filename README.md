@@ -1,5 +1,24 @@
 # SDL_SurfaceEx
-A small SDL based library for modifying surfaces and creating image effects
+A small SDL based library for modifying surfaces and creating image effects.
+
+Simply incldue this in your project and make calls via the SDL_SurfaceEx namespace.
+
+Code Examples:
+
+#include "SDL_SurfaceEx.h"
+
+//Include gameicon.png in your app directory
+SDL_Surface * gameIconSurface = SDL_SurfaceEx::load_surface_image("gameicon.png");
+if( gameIconSurface !=NULL )
+{
+  
+  SDL_Surface * gameIconSurfaceGrayScaled = SDL_SurfaceEx::surface_grayscale(gameIconSurface);
+  SDL_Surface * gameIconSurfaceInverted = SDL_SurfaceEx::surface_invert(gameIconSurface);
+  
+  SDL_FreeSurface(gameIconSurface);
+  SDL_FreeSurface(gameIconSurfaceGrayScaled);
+  SDL_FreeSurface(gameIconSurfaceInverted);
+}
 
 
 Donate to make SDL_SurfaceEx greater
