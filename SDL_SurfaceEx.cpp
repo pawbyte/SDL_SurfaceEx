@@ -239,6 +239,8 @@ bool SDL_SurfaceEx::surface_render_circle_color( SDL_Surface * surface, Sint16 x
         return false;
     }
     //Modified from SDL_GFX
+    //Copyright (C) 2012-2014  Andreas Schiffler
+
     Sint16 cx = 0;
     Sint16 cy = rad;
     Sint16 ocx = (Sint16) 0xffff;
