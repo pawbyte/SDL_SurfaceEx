@@ -11,7 +11,7 @@ Code Example ( main.cpp):
 #include "SDL_SurfaceEx.h"
 
 
-//Make to include SDL2 into your compiler/build system for this to work.
+//Make sure to include SDL2 into your compiler/build system for this to work.
 
 int main( int argc, char* args[] )
 {
