@@ -7,6 +7,7 @@ Code Examples:
 
 ```cpp
 
+
 #include "SDL_SurfaceEx.h"
 
 int main( int argc, char* args[] )
@@ -17,19 +18,19 @@ int main( int argc, char* args[] )
 	}
 
 	SDL_Window * gameWindow = SDL_CreateWindow("Test",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,640,480,SDL_WINDOW_SHOWN| SDL_WINDOW_RESIZABLE   );
-	
+
 	if( gameWindow == NULL )
 	{
 		return -1;
 	}
 	//Inits the renderer
-	SDL_Renderer * sdlRenderer = SDL_CreateRenderer( gameWindow, -1,  SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE );//  | SDL_RENDERER_PRESENTVSYNC ); 
-	
+	SDL_Renderer * sdlRenderer = SDL_CreateRenderer( gameWindow, -1,  SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE );//  | SDL_RENDERER_PRESENTVSYNC );
+
 	if( sdlRenderer == NULL )
 	{
 		return -2;
 	}
-	
+
 	//Include gameicon.png in your app directory
 	SDL_Surface * gameIconSurface = SDL_SurfaceEx::load_surface_image("gameicon.png");
 	if( gameIconSurface !=NULL )
@@ -38,8 +39,8 @@ int main( int argc, char* args[] )
 		SDL_Surface * gameIconSurfaceGrayScaled = SDL_SurfaceEx::surface_grayscale(gameIconSurface);
 		SDL_Surface * gameIconSurfaceInverted = SDL_SurfaceEx::surface_invert(gameIconSurface);
 
-		SDL_Texture * gameIconGrayTexture = create_texture_from_surface( sdlRenderer, gameIconSurfaceGrayScaled);
-		SDL_Texture * gameIconInvertedTexture = create_texture_from_surface( sdlRenderer, gameIconSurfaceInverted);
+		SDL_Texture * gameIconGrayTexture = SDL_SurfaceEx::create_texture_from_surface( sdlRenderer, gameIconSurfaceGrayScaled);
+		SDL_Texture * gameIconInvertedTexture = SDL_SurfaceEx::create_texture_from_surface( sdlRenderer, gameIconSurfaceInverted);
 
 
 		//Clears the screen
@@ -47,53 +48,61 @@ int main( int argc, char* args[] )
         SDL_Rect fillRect = {0,0,640, 480};
         SDL_SetRenderDrawColor( sdlRenderer, 0, 0, 0, 255 );
         SDL_RenderFillRect( sdlRenderer, &fillRect );
-		
-		
+
+        SDL_Rect renderRect = {0,0,320, 480};
+        SDL_RenderCopy( sdlRenderer, gameIconGrayTexture, NULL, &renderRect );
+
+        renderRect.x = 320;
+        SDL_RenderCopy( sdlRenderer, gameIconInvertedTexture, NULL , &renderRect );
+
+        //We should see two textures,grayscaled on the left and inverted on the right
+
 		//Updates the screen
 		SDL_RenderPresent( sdlRenderer );
 		SDL_SetRenderTarget( sdlRenderer, NULL );
-		
+
 		//Delay by 5000 ms since this is just a test app
 		SDL_Delay( 5000 );
-		
+
 		//Deletes our surfaces
 		if(gameIconSurface!=NULL)
 		{
 			SDL_FreeSurface(gameIconSurface);
 			gameIconSurface = NULL;
 		}
-		
+
 		if(gameIconSurfaceGrayScaled!=NULL)
 		{
 			SDL_FreeSurface(gameIconSurfaceGrayScaled);
 			gameIconSurfaceGrayScaled = NULL;
 		}
-		
+
 		if(gameIconSurfaceInverted!=NULL)
 		{
 			SDL_FreeSurface(gameIconSurfaceInverted);
 			gameIconSurfaceInverted = NULL;
 		}
-		
+
 		//Deletes our textures
 		if(gameIconGrayTexture!=NULL)
 		{
 			SDL_DestroyTexture(gameIconGrayTexture);
 			gameIconGrayTexture = NULL;
 		}
-		
+
 		if(gameIconInvertedTexture!=NULL)
 		{
 			SDL_DestroyTexture(gameIconInvertedTexture);
 			gameIconInvertedTexture = NULL;
 		}
-		
+
 		SDL_Quit();
 		return 1;
 	}
 
     return 0;
 }
+
 
 ```
 
