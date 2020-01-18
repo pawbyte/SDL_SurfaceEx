@@ -5,6 +5,8 @@ Simply incldue this in your project and make calls via the SDL_SurfaceEx namespa
 
 Code Examples:
 
+```cpp
+
 #include "SDL_SurfaceEx.h"
 
 //Include gameicon.png in your app directory
@@ -19,7 +21,7 @@ if( gameIconSurface !=NULL )
   SDL_FreeSurface(gameIconSurfaceGrayScaled);
   SDL_FreeSurface(gameIconSurfaceInverted);
 }
-
+```
 
 Donate to make SDL_SurfaceEx greater
 =========================================
