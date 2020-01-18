@@ -1,7 +1,7 @@
 # SDL_SurfaceEx
 A small SDL based library for modifying surfaces and creating image effects.
 
-Simply incldue this in your project and make calls via the SDL_SurfaceEx namespace.
+Simply include this in your project and make calls via the SDL_SurfaceEx namespace.
 
 Code Examples:
 
