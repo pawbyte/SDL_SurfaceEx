@@ -8,7 +8,7 @@ Code Example ( main.cpp):
 ```cpp
 
 
-#include "SDL_SurfaceEx.h"
+#include "sdl_surfaceex.h"
 
 
 //Make sure to include SDL2 into your compiler/build system for this to work.
@@ -36,7 +36,7 @@ int main( int argc, char* args[] )
 	}
 
 	//Include gameicon.png in your app directory
-	SDL_Surface * gameIconSurface = SDL_SurfaceEx::load_surface_image("gameicon.png");
+	SDL_Surface * gameIconSurface = sdl_surface_ex::load_surface_image("gameicon.png");
 	if( gameIconSurface == NULL )
 	{
 	    SDL_Quit();
@@ -46,14 +46,14 @@ int main( int argc, char* args[] )
     //Now we commence using the library
 
     //First we grayscale the icon
-    SDL_Surface * gameIconSurfaceGrayScaled = SDL_SurfaceEx::surface_grayscale(gameIconSurface);
+    SDL_Surface * gameIconSurfaceGrayScaled = sdl_surface_ex::surface_grayscale(gameIconSurface);
 
     //Next we invert the colors of the original icon
-    SDL_Surface * gameIconSurfaceInverted = SDL_SurfaceEx::surface_invert(gameIconSurface);
+    SDL_Surface * gameIconSurfaceInverted = sdl_surface_ex::surface_invert(gameIconSurface);
 
     //Now since it's SDL2 we make them into a textures.
-    SDL_Texture * gameIconGrayTexture = SDL_SurfaceEx::create_texture_from_surface( sdlRenderer, gameIconSurfaceGrayScaled);
-    SDL_Texture * gameIconInvertedTexture = SDL_SurfaceEx::create_texture_from_surface( sdlRenderer, gameIconSurfaceInverted);
+    SDL_Texture * gameIconGrayTexture = sdl_surface_ex::create_texture_from_surface( sdlRenderer, gameIconSurfaceGrayScaled);
+    SDL_Texture * gameIconInvertedTexture = sdl_surface_ex::create_texture_from_surface( sdlRenderer, gameIconSurfaceInverted);
 
 
     //Clears the screen
