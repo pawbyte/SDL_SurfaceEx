@@ -38,8 +38,8 @@ SOFTWARE.
 namespace sdl_surface_ex
 {
     //Surface Functions
-    SDL_Texture * create_texture_from_surface( SDL_Renderer * sdlRenderer, SDL_Surface * surf, int format = SDL_PIXELFORMAT_RGBA8888, SDL_Color * sdlColorKey = NULL, bool destroySurface = true );
-    SDL_Surface * create_filled_surface(int w, int h, SDL_Color color, Uint8 alpha = 255);
+    SDL_Texture * create_texture_from_surface( SDL_Renderer * sdlRenderer, SDL_Surface * surf,  int format = SDL_PIXELFORMAT_RGBA8888, bool destroySurface = true );
+    SDL_Surface * create_filled_surface_rgba(int w, int h, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b, Uint8 alpha = 255);
     SDL_Surface * load_surface_image( const char * filename );
 
     Uint32 get_pixel32( SDL_Surface *surface, int x, int y );
@@ -48,15 +48,15 @@ namespace sdl_surface_ex
 
     void put_pixel32( SDL_Surface *surface, int x, int y, Uint32 pixel );
 
-    void surface_render_horizontal_line_color( SDL_Surface * surface, int y, int x1, int x2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
-    void surface_render_vertical_line_color( SDL_Surface * surface, int x, int y1, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
-    bool surface_render_circle_color( SDL_Surface * surface, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255 );
+    void surface_render_horizontal_line_color_rgba( SDL_Surface * surface, int y, int x1, int x2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+    void surface_render_vertical_line_color_rgba( SDL_Surface * surface, int x, int y1, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
+    bool surface_render_circle_color_rgba( SDL_Surface * surface, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255 );
 
     SDL_Surface * surface_grayscale( SDL_Surface *surface);
     SDL_Surface * surface_invert( SDL_Surface *surface);
-    SDL_Surface * surface_merge_color( SDL_Surface *surface, SDL_Color colorMerge, float amount );
-    SDL_Surface * surface_recolor( SDL_Surface *surface, SDL_Color colorMerge, float amount );
-    SDL_Surface * surface_remove_color( SDL_Surface *surface, SDL_Color colorToRemove );
+    SDL_Surface * surface_merge_color_rgba( SDL_Surface *surface, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b, float amount );
+    SDL_Surface * surface_recolor_rgbar( SDL_Surface *surface, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b, float amount );
+    SDL_Surface * surface_remove_color_rgba( SDL_Surface *surface, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b );
     SDL_Surface * surface_flip( SDL_Surface *surface, int flags );
 };
 

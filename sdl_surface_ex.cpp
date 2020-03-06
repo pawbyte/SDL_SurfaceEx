@@ -71,7 +71,7 @@ namespace sdl_surface_ex
         }
     }
 
-    SDL_Texture * create_texture_from_surface( SDL_Renderer * sdlRenderer, SDL_Surface * surf, int format , SDL_Color * sdlColorKey, bool destroySurface  )
+    SDL_Texture * create_texture_from_surface( SDL_Renderer * sdlRenderer, SDL_Surface * surf,  int format , bool destroySurface  )
     {
         if( surf == NULL)
         {
@@ -87,26 +87,7 @@ namespace sdl_surface_ex
             }
             return NULL;
         }
-        int pixelbytes=0;
-        Uint8 r,g,b,a;
         SDL_Surface * cast_img = SDL_ConvertSurfaceFormat(surf, format, 0 );
-        pixelbytes = cast_img->w*cast_img->h;
-        pixelbytes = pixelbytes*4;
-        unsigned char* pixels = (unsigned char*)cast_img->pixels;
-        if( sdlColorKey!=NULL )
-        {
-            for( int i=0;i<pixelbytes;i++ )
-            {
-                a=pixels[i+0];
-                r=pixels[i+1];
-                g=pixels[i+2];
-                b=pixels[i+3];
-                if( r==sdlColorKey->r && g==sdlColorKey->g && b==sdlColorKey->b )
-                {
-                    pixels[i+0]=0;
-                }
-            }
-        }
         SDL_Rect rect = { 0,0,cast_img->w,cast_img->h};
         SDL_Texture * newTexture = SDL_CreateTexture( sdlRenderer, format, SDL_TEXTUREACCESS_STATIC, cast_img->w, cast_img->h );
         SDL_UpdateTexture(newTexture, &rect, cast_img->pixels,cast_img->w*4);
@@ -120,7 +101,7 @@ namespace sdl_surface_ex
         return newTexture;
     }
 
-    SDL_Surface * create_filled_surface(int w, int h, SDL_Color color, Uint8 alpha  )
+    SDL_Surface * create_filled_surface_rgba(int w, int h, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b, Uint8 alpha  )
     {
         if( w <= 0 || h  <= 0 )
         {
@@ -138,6 +119,7 @@ namespace sdl_surface_ex
             //Lock the surface
             SDL_LockSurface( newSurface );
         }
+
         Uint8 rr=0, bb=0, gg=0, aa =0;
         Uint32 pixel;
         for(  x = 0; x < newSurface->w; x++)
@@ -146,10 +128,11 @@ namespace sdl_surface_ex
             for(  y = 0; y < newSurface->h; y++)
             {
                 //Get pixel
-                pixel = SDL_MapRGBA(newSurface->format,color.r,color.g,color.b, alpha );
+                pixel = SDL_MapRGBA(newSurface->format, color_key_r,color_key_g,color_key_b, alpha );
                 put_pixel32( newSurface, x, y, pixel );
             }
         }
+
         if( surface_is_locked )
         {
             //Lock the surface
@@ -178,7 +161,7 @@ namespace sdl_surface_ex
         return NULL;
     }
 
-    void surface_render_horizontal_line_color( SDL_Surface * surface, int y, int x1, int x2, Uint8 r, Uint8 g, Uint8 b, Uint8 a )
+    void surface_merge_color_rgba( SDL_Surface * surface, int y, int x1, int x2, Uint8 r, Uint8 g, Uint8 b, Uint8 a )
     {
         if( surface == NULL )
         {
@@ -199,7 +182,28 @@ namespace sdl_surface_ex
         }
     }
 
-    void surface_render_vertical_line_color( SDL_Surface * surface, int x, int y1, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a )
+    void surface_render_horizontal_line_color_rgba( SDL_Surface * surface, int y, int x1, int x2, Uint8 r, Uint8 g, Uint8 b, Uint8 a )
+    {
+        if( surface == NULL )
+        {
+            return;
+        }
+        if( surface->w <= x1 && surface->h <= y )
+        {
+            return;
+        }
+        int temp = SDL_min( x1, x2 );
+        x2 = SDL_max( x1, x2 );
+        x1 = temp;
+        Uint32 pixel;
+        for( int i = x1; i < x2; i++ )
+        {
+            pixel = SDL_MapRGBA(surface->format, r,g,b,a );
+            put_pixel32( surface, i, y, pixel );
+        }
+    }
+
+    void surface_render_vertical_line_color_rgba( SDL_Surface * surface, int x, int y1, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a )
     {
         if( surface == NULL )
         {
@@ -221,7 +225,7 @@ namespace sdl_surface_ex
     }
 
 
-    bool surface_render_circle_color( SDL_Surface * surface, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a  )
+    bool surface_render_circle_color_rgba( SDL_Surface * surface, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a  )
     {
         if( surface == NULL )
         {
@@ -258,8 +262,8 @@ namespace sdl_surface_ex
                 {
                     ypcy = y + cy;
                     ymcy = y - cy;
-                    surface_render_horizontal_line_color( surface, ypcy,xmcx, xpcx, r, g, b, a );
-                    surface_render_horizontal_line_color( surface,  ymcy,xmcx, xpcx, r, g, b, a );
+                    surface_render_horizontal_line_color_rgba( surface, ypcy,xmcx, xpcx, r, g, b, a );
+                    surface_render_horizontal_line_color_rgba( surface,  ymcy,xmcx, xpcx, r, g, b, a );
                 }
                 /*else
                 {
@@ -275,12 +279,12 @@ namespace sdl_surface_ex
                     {
                         ypcx = y + cx;
                         ymcx = y - cx;
-                        surface_render_horizontal_line_color( surface,  ymcx,xmcy, xpcy, r,g,b,a );
-                        surface_render_horizontal_line_color( surface,  ypcx,xmcy, xpcy, r,g,b,a );
+                        surface_render_horizontal_line_color_rgba( surface,  ymcx,xmcy, xpcy, r,g,b,a );
+                        surface_render_horizontal_line_color_rgba( surface,  ypcx,xmcy, xpcy, r,g,b,a );
                     }
                     else
                     {
-                        surface_render_horizontal_line_color( surface,  y,xmcy, xpcy, r,g,b,a );
+                        surface_render_horizontal_line_color_rgba( surface,  y,xmcy, xpcy, r,g,b,a );
                     }
                 }
                 ocx = cx;
@@ -315,14 +319,11 @@ namespace sdl_surface_ex
             return NULL;
         }
         //Pointer to the soon to be coloredSurface surface
-        SDL_Surface *tempSurface = NULL;
         SDL_Surface *coloredSurface = NULL;
         //If the image is color keyed
-        tempSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
-        coloredSurface = SDL_ConvertSurfaceFormat(tempSurface,SDL_PIXELFORMAT_RGBA8888,0);
+        coloredSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
         if( coloredSurface!=NULL)
         {
-            SDL_FreeSurface(tempSurface);
             //coloredSurface = SDL_CreateRGBSurface(0, width, height, 32,SDL_rmask, SDL_gmask, SDL_bmask, SDL_amask);
             //If the surface must be locked
             bool surface_is_locked = SDL_MUSTLOCK( surface );
@@ -358,11 +359,6 @@ namespace sdl_surface_ex
             //Return coloredSurface surface
             return coloredSurface;
         }
-        else if( tempSurface!=NULL)
-        {
-            SDL_FreeSurface(tempSurface);
-            tempSurface = NULL;
-        }
         return NULL;
     }
 
@@ -374,11 +370,9 @@ namespace sdl_surface_ex
             SDL_Surface *tempSurface = NULL;
             SDL_Surface *coloredSurface = NULL;
 
-            tempSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
-            coloredSurface = SDL_ConvertSurfaceFormat(tempSurface,SDL_PIXELFORMAT_RGBA8888,0);
+            coloredSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
             if( coloredSurface!=NULL)
             {
-                SDL_FreeSurface(tempSurface);
                 //If the surface must be locked
                 bool surface_is_locked = SDL_MUSTLOCK( surface );
                 if( surface_is_locked )
@@ -419,20 +413,18 @@ namespace sdl_surface_ex
         return NULL;
     }
 
-    SDL_Surface * surface_recolor( SDL_Surface *surface, SDL_Color colorMerge, float amount )
+    SDL_Surface * surface_recolor( SDL_Surface *surface, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b, float amount )
     {
-        if( surface!=NULL)
+        if( surface!=NULL )
         {
             //Pointer to the soon to be coloredSurface surface
             SDL_Surface *tempSurface = NULL;
             SDL_Surface *coloredSurface = NULL;
 
             //If the image is color keyed
-            tempSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
-            coloredSurface = SDL_ConvertSurfaceFormat(tempSurface,SDL_PIXELFORMAT_RGBA8888,0);
+            coloredSurface = SDL_CreateRGBSurface( 0, surface->w, surface->h, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask );
             if( coloredSurface!=NULL)
             {
-                SDL_FreeSurface(tempSurface);
                 //If the surface must be locked
                 bool surface_is_locked = SDL_MUSTLOCK( surface );
                 if( surface_is_locked )
@@ -440,6 +432,7 @@ namespace sdl_surface_ex
                     //Lock the surface
                     SDL_LockSurface( surface );
                 }
+
                 Uint8 rr=0, bb=0, gg=0, aa = 0;
                 //Go through columns
                 for( int x = 0; x < coloredSurface->w; x++)
@@ -451,9 +444,9 @@ namespace sdl_surface_ex
                         Uint32 pixel = get_pixel32( surface, x, y );
                         SDL_GetRGBA(pixel,surface->format,&rr,&gg,&bb, &aa);
 
-                        rr = merge_channel(rr,colorMerge.r,amount);
-                        gg = merge_channel(gg,colorMerge.g,amount);
-                        bb = merge_channel(bb,colorMerge.b,amount);
+                        rr = merge_channel(rr,color_key_r,amount);
+                        gg = merge_channel(gg,color_key_g,amount);
+                        bb = merge_channel(bb,color_key_b,amount);
                         pixel = SDL_MapRGBA(surface->format,rr,gg,bb, aa);
                         put_pixel32( coloredSurface, x, y, pixel );
                     }
@@ -468,18 +461,13 @@ namespace sdl_surface_ex
                 //Return coloredSurface surface
                 return coloredSurface;
             }
-            else if( tempSurface!=NULL)
-            {
-                SDL_FreeSurface(tempSurface);
-                tempSurface = NULL;
-            }
         }
         return NULL;
     }
 
-    SDL_Surface * surface_remove_color( SDL_Surface *surface, SDL_Color colorToRemove )
+    SDL_Surface * surface_remove_color_rgba( SDL_Surface *surface, Uint8 color_key_r, Uint8 color_key_g, Uint8 color_key_b )
     {
-        if( surface!=NULL)
+        if( surface!=NULL )
         {
             //Pointer to the soon to be coloredSurface surface
             SDL_Surface *coloredSurface = NULL;
@@ -494,6 +482,7 @@ namespace sdl_surface_ex
                     //Lock the surface
                     SDL_LockSurface( coloredSurface );
                 }
+
                 Uint8 rr=0, bb=0, gg=0, aa = 0;
                 int y = 0;
                 Uint32 pixel;
@@ -507,7 +496,7 @@ namespace sdl_surface_ex
                         pixel = get_pixel32( coloredSurface, x, y );
                         SDL_GetRGBA(pixel,coloredSurface->format,&rr,&gg,&bb, &aa);
                         //if the color is shade of white/gray
-                        if(rr==colorToRemove.r&&gg==colorToRemove.g&&bb==colorToRemove.b)
+                        if( rr==color_key_r && gg==color_key_g && bb==color_key_b)
                         {
                             pixel = SDL_MapRGBA(coloredSurface->format,255,0,255,0);
                         }
