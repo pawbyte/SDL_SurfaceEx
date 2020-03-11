@@ -124,7 +124,7 @@ Work on open source projects like this is not possible without funding. The amou
 
 We have a [Patron Page](https://www.patreon.com/pawbyte?ty=h) that you can help fund future open source projects and the updates to this one.
 
-There is also a [PayPal](http://gamepencil.pawbyte.com/donate/) one time donation method as well. 
+There is also a [PayPal](http://www.pawbyte.com/donate/) one time donation method as well. 
 
 I appreciate your generousity and moving this project forward. 
 
